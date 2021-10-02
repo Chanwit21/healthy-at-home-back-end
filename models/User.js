@@ -9,6 +9,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
       },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       role: {
         type: DataTypes.ENUM('ADMIN', 'TRAINER', 'CUSTOMER'),
         allowNull: false,
@@ -26,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       weight: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(5, 2),
       },
       height: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT(5, 2),
       },
       phoneNumber: {
         type: DataTypes.STRING,
@@ -64,6 +73,15 @@ module.exports = (sequelize, DataTypes) => {
       as: 'TrainFroms',
       foreignKey: {
         name: 'trainerId',
+        allowNull: false,
+      },
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    });
+
+    User.hasMany(models.CreditCard, {
+      foreignKey: {
+        name: 'userId',
         allowNull: false,
       },
       onDelete: 'RESTRICT',

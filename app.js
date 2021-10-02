@@ -1,15 +1,45 @@
 require('dotenv').config();
+require('./config/passport');
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const passport = require('passport');
 const exerciseRoute = require('./route/exercisePosture');
+const creditCardRoute = require('./route/creditCard');
+const userRoute = require('./route/user');
+const courseServiceRoute = require('./route/courseService');
+
 app.use(cors());
 app.use(express.json());
 
+// Initial passport
+app.use(passport.initialize());
+
+app.use('/users', userRoute);
 app.use('/exercise', exerciseRoute);
+app.use('/course_services', courseServiceRoute);
+app.use('/credit_card', creditCardRoute);
+
+app.use((req, res, next) => {
+  res.status(404).json('resource is not found');
+});
+
+app.use((err, req, res, next) => {
+  console.log(err);
+
+  let code;
+
+  if (err.name === 'MulterError') {
+    code = 400;
+  }
+
+  res.status(code || err.code || err.http_code || 500).json({ message: err.message });
+});
 
 const port = process.env.PORT || 4001;
 const server = app.listen(port, () => console.log(`Serever is running on port ${port}`));
+
+// Test Db and Socket io
 
 // const { sequelize } = require('./models');
 // sequelize.sync({ force: true });

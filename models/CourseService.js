@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       day: {
-        type: DataTypes.DECIMAL(2, 0),
+        type: DataTypes.DECIMAL(3, 0),
         allowNull: false,
       },
     },
@@ -42,6 +42,15 @@ module.exports = (sequelize, DataTypes) => {
 
   CourseService.associate = (models) => {
     CourseService.hasMany(models.UserTrainerWorkoutScheduleFoodSchedule, {
+      foreignKey: {
+        name: 'courseServiceId',
+        allowNull: false,
+      },
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    });
+
+    CourseService.hasMany(models.Transaction, {
       foreignKey: {
         name: 'courseServiceId',
         allowNull: false,

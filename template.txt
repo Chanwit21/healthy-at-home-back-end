@@ -1,0 +1,21 @@
+// model
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
+  const model = sequelize.define(
+    'Image',
+    {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        allowNull: false,
+        defaultValue: Sequelize.UUIDV4,
+      },
+      
+    },
+    {
+      tableName: 'images',
+      underscored: true,
+    }
+  );
+};
