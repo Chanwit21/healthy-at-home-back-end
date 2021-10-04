@@ -50,6 +50,7 @@ exports.login = async (req, res, next) => {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
+          image: user.image,
         };
         const token = jwt.sign(payload, process.env.SECRETKEY, { expiresIn: '30d' });
         res.status(200).json({ message: 'Success login', token });

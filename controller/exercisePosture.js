@@ -1,4 +1,5 @@
 const { ExercisePosture } = require('../models');
+const { validateYouTubeUrl } = require('../util/validate');
 
 exports.getAllExercisePosture = async (req, res, next) => {
   try {
@@ -13,6 +14,9 @@ exports.getExercisePostureById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const exercisePosture = await ExercisePosture.findOne({ where: { id: id } });
+    if (!exercisePosture) {
+      return res.status(400).json({ message: 'Can not get Exercise Posture with this id.' });
+    }
     res.status(200).json({ exercisePosture });
   } catch (err) {
     next(err);
@@ -22,6 +26,29 @@ exports.getExercisePostureById = async (req, res, next) => {
 exports.createExercisePosture = async (req, res, next) => {
   try {
     const { name, fontColor, backgroundColor, link, type } = req.body;
+
+    if ([name, fontColor, backgroundColor, link, type].includes(undefined)) {
+      return res.status(400).json({ message: 'All field is require.' });
+    }
+
+    if (!['Full Body', 'Core & Abs', 'Chest', 'Arm', 'Butt', 'Cardio', 'Rest'].includes(type)) {
+      return res.status(400).json({ message: 'Type is invalid.' });
+    }
+
+    const colorCodeRegx = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
+
+    if (!colorCodeRegx.test(fontColor)) {
+      return res.status(400).json({ message: 'fontColor is invalid.' });
+    }
+
+    if (!colorCodeRegx.test(backgroundColor)) {
+      return res.status(400).json({ message: 'backgroundColor is invalid.' });
+    }
+
+    if (!validateYouTubeUrl(link)) {
+      return res.status(400).json({ message: 'link is invalid.' });
+    }
+
     const exercisePosture = await ExercisePosture.create({
       name,
       fontColor,
@@ -39,6 +66,29 @@ exports.updateExercisePosture = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name, fontColor, backgroundColor, link, type } = req.body;
+
+    if ([name, fontColor, backgroundColor, link, type].includes(undefined)) {
+      return res.status(400).json({ message: 'All field is require.' });
+    }
+
+    if (!['Full Body', 'Core & Abs', 'Chest', 'Arm', 'Butt', 'Cardio', 'Rest'].includes(type)) {
+      return res.status(400).json({ message: 'Type is invalid.' });
+    }
+
+    const colorCodeRegx = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
+
+    if (!colorCodeRegx.test(fontColor)) {
+      return res.status(400).json({ message: 'fontColor is invalid.' });
+    }
+
+    if (!colorCodeRegx.test(backgroundColor)) {
+      return res.status(400).json({ message: 'backgroundColor is invalid.' });
+    }
+
+    if (!validateYouTubeUrl(link)) {
+      return res.status(400).json({ message: 'link is invalid.' });
+    }
+
     const [rows] = await ExercisePosture.update(
       { name, fontColor, backgroundColor, link, type },
       { where: { id: id } }
