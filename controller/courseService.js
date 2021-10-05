@@ -5,7 +5,7 @@ const Customerror = require('../util/error');
 
 exports.getAllCourseService = async (req, res, next) => {
   try {
-    const course_services = await CourseService.findAll();
+    const course_services = await CourseService.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } });
     res.status(200).json({ course_services });
   } catch (err) {
     next(err);

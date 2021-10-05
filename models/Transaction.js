@@ -10,11 +10,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
       },
-      paidTime:{
-          type:DataTypes.DATE,
-          allowNull: false,
-      }
-      
+      omiseCreatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      cardId: {
+        type: DataTypes.STRING,
+      },
+      sourceId: {
+        type: DataTypes.STRING,
+      },
+      chargeId: DataTypes.STRING,
+      amount: DataTypes.DECIMAL(8, 2),
+      status: DataTypes.STRING,
+      paidAt: DataTypes.DATE,
+      expiresAt: DataTypes.DATE,
     },
     {
       tableName: 'transactions',
@@ -22,16 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Transaction.associate = (models)=>{
-    Transaction.belongsTo(models.CreditCard,{
-        foreignKey: {
-          name: 'creditCardId',
-          allowNull: false,
-        },
-        onDelete: 'RESTRICT',
-        onUpdate: 'RESTRICT',
-      })
-      
+  Transaction.associate = (models) => {
     Transaction.belongsTo(models.CourseService, {
       foreignKey: {
         name: 'courseServiceId',
@@ -39,8 +40,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       onDelete: 'RESTRICT',
       onUpdate: 'RESTRICT',
-    })
-  }
+    });
+    Transaction.belongsTo(models.User, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    });
+  };
 
-  return Transaction
+  return Transaction;
 };

@@ -10,11 +10,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
       },
-      customerId:{
-          type:DataTypes.STRING,
-          allowNull: false,
-      }
-      
+      customerId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       tableName: 'credit_cards',
@@ -22,25 +21,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  CreditCard.associate = (models)=>{
-    CreditCard.belongsTo(models.User,{
-        foreignKey: {
-          name: 'userId',
-          allowNull: false,
-        },
-        onDelete: 'RESTRICT',
-        onUpdate: 'RESTRICT',
-      })
-      
-    CreditCard.hasMany(models.Transaction,{
+  CreditCard.associate = (models) => {
+    CreditCard.belongsTo(models.User, {
       foreignKey: {
-        name: 'creditCardId',
+        name: 'userId',
         allowNull: false,
       },
       onDelete: 'RESTRICT',
       onUpdate: 'RESTRICT',
-    })
-  }
+    });
+  };
 
-  return CreditCard
+  return CreditCard;
 };

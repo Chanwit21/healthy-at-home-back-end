@@ -7,6 +7,32 @@ const opt = {
   secretOrKey: process.env.SECRETKEY,
 };
 
+//  Check Customer Strategy
+const jwtCustomerStrategy = new JWTStrategy(opt, async (payload, done) => {
+  try {
+    const user = await User.findOne({ where: { id: payload.id } });
+    if (user) {
+      if (user.role !== 'CUSTOMER') {
+        done(null, false);
+      } else {
+        const newUser = {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        };
+        done(null, newUser);
+      }
+    } else {
+      done(null, false);
+    }
+  } catch (err) {
+    done(err, null);
+  }
+});
+
+passport.use('jwtCustomer', jwtCustomerStrategy);
+
 //  Check Admin Strategy
 const jwtAdminStrategy = new JWTStrategy(opt, async (payload, done) => {
   try {

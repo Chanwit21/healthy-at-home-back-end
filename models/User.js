@@ -87,6 +87,15 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'RESTRICT',
       onUpdate: 'RESTRICT',
     });
+
+    User.hasMany(models.Transaction, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+      },
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    });
   };
 
   return User;
