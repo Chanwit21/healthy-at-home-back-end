@@ -52,7 +52,7 @@ exports.login = async (req, res, next) => {
           role: user.role,
           image: user.image,
         };
-        const token = jwt.sign(payload, process.env.SECRETKEY, { expiresIn: '30d' });
+        const token = jwt.sign(payload, process.env.SECRETKEY, { expiresIn: process.env.TOKEN_EXPIRE });
         res.status(200).json({ message: 'Success login', token });
       } else {
         res.status(400).json({ message: 'email or password is incorrect' });
