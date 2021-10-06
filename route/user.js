@@ -15,5 +15,6 @@ router.put(
   upload.single('profile-image'),
   userController.updateUser
 );
+router.get('/user_info', passport.authenticate('jwtAlluser', { session: false }), userController.getUserInfo);
 
 module.exports = router;

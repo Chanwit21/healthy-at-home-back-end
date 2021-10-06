@@ -34,28 +34,46 @@ exports.updateUser = async (req, res, next) => {
       return res.status(400).json({ message: 'Phone number is invalid length' });
     }
 
-    const result = await cloundinaryUploadPromise(req.file.path);
+    const objectUpdate = {
+      firstName,
+      lastName,
+      weight: +weight || null,
+      height: +height || null,
+      nickName: nickName || null,
+      phoneNumber: phoneNumber || null,
+      gender: gender || null,
+      education: education || null,
+    };
 
-    const [rows] = await User.update(
-      {
-        firstName,
-        lastName,
-        nickName,
-        weight: +weight,
-        height: +height,
-        phoneNumber,
-        gender,
-        image: result.secure_url,
-        education,
-      },
-      { where: { id: req.user.id } }
-    );
+    if (req.file) {
+      const result = await cloundinaryUploadPromise(req.file.path);
+      objectUpdate.image = result.secure_url;
+    }
+
+    const [rows] = await User.update(objectUpdate, { where: { id: req.user.id } });
 
     if (rows === 0) {
       return res.status(400).json({ message: 'Cannot update profile with this user' });
     }
 
     res.status(200).json({ message: 'Update profile success' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getUserInfo = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findOne({
+      where: { id: userId },
+      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+    });
+    if (user) {
+      return res.status(200).json({ user });
+    } else {
+      res.status(400).json({ message: 'Can not get user with this id.' });
+    }
   } catch (err) {
     next(err);
   }
