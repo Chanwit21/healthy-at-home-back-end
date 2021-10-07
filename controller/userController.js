@@ -48,6 +48,8 @@ exports.updateUser = async (req, res, next) => {
     if (req.file) {
       const result = await cloundinaryUploadPromise(req.file.path);
       objectUpdate.image = result.secure_url;
+    } else {
+      objectUpdate.image = null;
     }
 
     const [rows] = await User.update(objectUpdate, { where: { id: req.user.id } });

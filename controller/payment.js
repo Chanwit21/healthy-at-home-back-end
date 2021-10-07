@@ -7,7 +7,7 @@ exports.payMentByCard = (req, res, next) => {
     {
       name: req.user.firstName + ' ' + req.user.lastName,
       amount: amount,
-      currency: 'thb',
+      currency: 'THB',
       card: token,
       metadata: { ...state, userId: req.user.id, serviceId },
     },
