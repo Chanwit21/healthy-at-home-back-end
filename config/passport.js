@@ -111,6 +111,32 @@ const jwtAdminOrTrainer = new JWTStrategy(opt, async (payload, done) => {
 
 passport.use('jwtAdminOrTrainer', jwtAdminOrTrainer);
 
+//Check Customer or Trainer
+const jwtCustomerOrTrainer = new JWTStrategy(opt, async (payload, done) => {
+  try {
+    const user = await User.findOne({ where: { id: payload.id } });
+    if (user) {
+      if (user.role === 'ADMIN') {
+        done(null, false);
+      } else {
+        const newUser = {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+        };
+        done(null, newUser);
+      }
+    } else {
+      done(null, false);
+    }
+  } catch (err) {
+    done(err, null);
+  }
+});
+
+passport.use('jwtCustomerOrTrainer', jwtCustomerOrTrainer);
+
 //  Check All user Strategy
 const jwtAllUserStartegy = new JWTStrategy(opt, async (payload, done) => {
   try {

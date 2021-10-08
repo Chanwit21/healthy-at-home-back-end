@@ -4,7 +4,7 @@ const foodScheduleController = require('../controller/foodSchedule');
 
 router.get(
   '/:day/:relationId',
-  passport.authenticate('jwtCustomer', { session: false }),
+  passport.authenticate('jwtCustomerOrTrainer', { session: false }),
   foodScheduleController.getFoodScheduleByDay
 );
 router.post(
