@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     ExercisePostureWorkoutSchedule.belongsTo(models.ExercisePosture, {
       foreignKey: {
         name: 'exercisePostureId',
-        allowNull: false,
+        allowNull: true,
       },
       onDelete: 'RESTRICT',
       onUpdate: 'RESTRICT',

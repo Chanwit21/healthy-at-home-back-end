@@ -3,7 +3,7 @@ const { validateYouTubeUrl } = require('../util/validate');
 
 exports.getAllExercisePosture = async (req, res, next) => {
   try {
-    const exercisePostures = await ExercisePosture.findAll();
+    const exercisePostures = await ExercisePosture.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } });
     res.status(200).json({ exercisePostures });
   } catch (err) {
     next(err);
@@ -13,7 +13,10 @@ exports.getAllExercisePosture = async (req, res, next) => {
 exports.getExercisePostureById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const exercisePosture = await ExercisePosture.findOne({ where: { id: id } });
+    const exercisePosture = await ExercisePosture.findOne({
+      where: { id: id },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    });
     if (!exercisePosture) {
       return res.status(400).json({ message: 'Can not get Exercise Posture with this id.' });
     }

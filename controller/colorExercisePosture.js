@@ -2,7 +2,9 @@ const { ColorExercisePostureInformation } = require('../models');
 
 exports.getAllColorExercisePosture = async (req, res, next) => {
   try {
-    const colorExercisePostures = await ColorExercisePostureInformation.findAll();
+    const colorExercisePostures = await ColorExercisePostureInformation.findAll({
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    });
     res.status(200).json({ colorExercisePostures });
   } catch (err) {
     next(err);
@@ -22,7 +24,7 @@ exports.createColorExercisePosture = async (req, res, next) => {
       title,
       breakPeriod,
     });
-    res.status(200).json({ colorExercisePosture });
+    res.status(201).json({ colorExercisePosture });
   } catch (err) {
     next(err);
   }

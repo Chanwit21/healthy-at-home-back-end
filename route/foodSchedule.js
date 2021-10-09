@@ -18,4 +18,10 @@ router.put(
   foodScheduleController.updateFoodScheduleByDay
 );
 
+router.delete(
+  '/:id',
+  passport.authenticate('jwtTrainer', { session: false }),
+  foodScheduleController.deleteFoodScheduleById
+);
+
 module.exports = router;

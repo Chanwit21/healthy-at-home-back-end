@@ -63,3 +63,16 @@ exports.updateFoodScheduleByDay = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.deleteFoodScheduleById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const rows = await FoodSchedule.destroy({ where: { id: id } });
+    if (rows === 0) {
+      return res.status(400).json({ message: 'Can not delete with this id.' });
+    }
+    res.status(204).json();
+  } catch (err) {
+    next(err);
+  }
+};

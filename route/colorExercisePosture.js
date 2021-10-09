@@ -9,7 +9,7 @@ router.get(
 );
 router.post(
   '/',
-  passport.authenticate('jwtAdmin', { session: false }),
+  passport.authenticate('jwtAdminOrTrainer', { session: false }),
   colorExercisePostureController.createColorExercisePosture
 );
 
