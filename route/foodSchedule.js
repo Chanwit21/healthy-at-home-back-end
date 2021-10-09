@@ -12,5 +12,10 @@ router.post(
   passport.authenticate('jwtTrainer', { session: false }),
   foodScheduleController.createFoodScheduleByDay
 );
+router.put(
+  '/:id',
+  passport.authenticate('jwtTrainer', { session: false }),
+  foodScheduleController.updateFoodScheduleByDay
+);
 
 module.exports = router;
