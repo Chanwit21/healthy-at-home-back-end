@@ -6,10 +6,10 @@ const foodImageController = require('../controller/foodImage');
 router.get('/', passport.authenticate('jwtAlluser', { session: false }), foodImageController.getFoodImageByQuery);
 router.post(
   '/',
-  passport.authenticate('jwtAdmin', { session: false }),
+  passport.authenticate('jwtAdminOrTrainer', { session: false }),
   upload.single('food_image'),
   foodImageController.createImage
 );
-router.delete('/:id', passport.authenticate('jwtAdmin', { session: false }), foodImageController.deleteImage);
+router.delete('/:id', passport.authenticate('jwtAdminOrTrainer', { session: false }), foodImageController.deleteImage);
 
 module.exports = router;

@@ -2,15 +2,19 @@ const { Image } = require('../models');
 const cloundinaryUploadPromise = require('../util/upload');
 
 exports.getFoodImageByQuery = async (req, res, next) => {
-  const { type } = req.query;
-  if (['food_menu_postworkout', 'food_menu_normal', 'food_menu_snack', 'food_menu_preworkout'].includes(type)) {
-    const images = await Image.findAll({
-      attributes: { exclude: ['createdAt', 'updatedAt'] },
-      where: { imageType: type },
-    });
-    res.status(200).json({ images });
-  } else {
-    res.status(400).json({ message: 'Type is not found.' });
+  try {
+    const { type } = req.query;
+    if (['food_menu_postworkout', 'food_menu_normal', 'food_menu_snack', 'food_menu_preworkout'].includes(type)) {
+      const images = await Image.findAll({
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        where: { imageType: type },
+      });
+      res.status(200).json({ images });
+    } else {
+      res.status(400).json({ message: 'Type is not found.' });
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -30,9 +34,8 @@ exports.createImage = async (req, res, next) => {
 
 exports.deleteImage = async (req, res, next) => {
   try {
-    const { type } = req.body;
     const { id } = req.params;
-    const rows = await Image.destroy({ where: { id: id, imageType: type } });
+    const rows = await Image.destroy({ where: { id: id } });
     if (rows === 0) {
       return res.status(400).json({ message: 'Can not delete food image with this id' });
     }
