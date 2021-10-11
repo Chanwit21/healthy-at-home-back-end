@@ -23,6 +23,7 @@ const foodScheduleRoute = require('./route/foodSchedule');
 const colorExercisePostureRoute = require('./route/colorExercisePosture');
 const customerInprogressRoute = require('./route/customerInprogress');
 const workoutScheduleRoute = require('./route/workoutSchedule');
+const relationRoute = require('./route/relation');
 
 app.use(cors());
 app.use(express.json());
@@ -48,6 +49,7 @@ app.use('/color_exercise_posture', colorExercisePostureRoute);
 app.use('/customer_inprogress', customerInprogressRoute);
 app.use('/food_schedule', foodScheduleRoute);
 app.use('/workout_schedule', workoutScheduleRoute);
+app.use('/relation', relationRoute);
 
 app.use((req, res, next) => {
   res.status(404).json('resource is not found');

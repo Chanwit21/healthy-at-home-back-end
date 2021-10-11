@@ -23,17 +23,17 @@ exports.changeUserRole = async (req, res, next) => {
 exports.updateUser = async (req, res, next) => {
   const { firstName, lastName, nickName, weight, height, phoneNumber, gender, education } = req.body;
   try {
-    if (isNaN(weight)) {
-      return res.status(400).json({ message: 'Weight must be a number' });
-    }
+    // if (isNaN(weight)) {
+    //   return res.status(400).json({ message: 'Weight must be a number' });
+    // }
 
-    if (isNaN(height)) {
-      return res.status(400).json({ message: 'Height must be a number' });
-    }
+    // if (isNaN(height)) {
+    //   return res.status(400).json({ message: 'Height must be a number' });
+    // }
 
-    if (phoneNumber.length !== 10) {
-      return res.status(400).json({ message: 'Phone number is invalid length' });
-    }
+    // if (phoneNumber.length !== 10) {
+    //   return res.status(400).json({ message: 'Phone number is invalid length' });
+    // }
 
     const objectUpdate = {
       firstName,
