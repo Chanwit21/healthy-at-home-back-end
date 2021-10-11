@@ -16,5 +16,6 @@ router.put(
   userController.updateUser
 );
 router.get('/user_info', passport.authenticate('jwtAlluser', { session: false }), userController.getUserInfo);
+router.get('/search', passport.authenticate('jwtAdmin', { session: false }), userController.getUserInfoByQuery);
 
 module.exports = router;

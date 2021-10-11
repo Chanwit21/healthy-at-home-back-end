@@ -8,6 +8,16 @@ router.get(
   exerciseController.getAllExercisePosture
 );
 router.get(
+  '/search',
+  passport.authenticate('jwtAdminOrTrainer', { session: false }),
+  exerciseController.getExercisePostureByQuery
+);
+router.get(
+  '/length',
+  passport.authenticate('jwtAdminOrTrainer', { session: false }),
+  exerciseController.getExercisePostureLength
+);
+router.get(
   '/:id',
   passport.authenticate('jwtAdminOrTrainer', { session: false }),
   exerciseController.getExercisePostureById

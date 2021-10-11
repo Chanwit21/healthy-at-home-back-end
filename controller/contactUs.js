@@ -10,6 +10,29 @@ exports.getAllContactUs = async (req, res, next) => {
   }
 };
 
+exports.getContactUsByQuery = async (req, res, next) => {
+  try {
+    const { sort, limit, offset } = req.query;
+
+    if (isNaN(limit) || isNaN(offset)) {
+      return res.status(400).json({ message: 'offset and limit must be a number!!' });
+    }
+
+    if (!['firstName', 'lastName', 'email', 'createdAt'].includes(sort)) {
+      return res.status(400).json({ message: 'sort is invalid!!' });
+    }
+
+    const DESC = sort === 'createdAt' ? 'DESC' : 'ASC';
+
+    const allContactUs = await ContactUs.findAll();
+    const contactUs = await ContactUs.findAll({ order: [[sort, DESC]], limit: +limit, offset: +offset });
+
+    res.status(200).json({ contactUs, length: allContactUs.length });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.createContactUs = async (req, res, next) => {
   const { firstName, lastName, email, additionalDetail } = req.body;
 

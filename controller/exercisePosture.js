@@ -10,6 +10,38 @@ exports.getAllExercisePosture = async (req, res, next) => {
   }
 };
 
+exports.getExercisePostureLength = async (req, res, next) => {
+  try {
+    const exercisePostures = await ExercisePosture.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } });
+    res.status(200).json({ length: exercisePostures.length });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getExercisePostureByQuery = async (req, res, next) => {
+  try {
+    const { sortBy, limit, offset } = req.query;
+    if (isNaN(limit) || isNaN(offset)) {
+      return res.status(400).json({ message: 'limit and offset must be a number.' });
+    }
+
+    if (!['name', 'fontColor', 'backgroundColor', 'link', 'type'].includes(sortBy)) {
+      return res.status(400).json({ message: 'sortBy is invalid.' });
+    }
+
+    const exercisePostures = await ExercisePosture.findAll({
+      order: [[sortBy]],
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      offset: +offset,
+      limit: +limit,
+    });
+    res.status(200).json({ exercisePostures });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getExercisePostureById = async (req, res, next) => {
   try {
     const { id } = req.params;

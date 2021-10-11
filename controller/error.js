@@ -1,5 +1,6 @@
 const errorController = (err, req, res, next) => {
   console.log(err);
+  console.log(JSON.stringify(err, null, 2));
 
   let code;
   let message;
@@ -10,7 +11,7 @@ const errorController = (err, req, res, next) => {
 
   if (err.code === 'ETIMEDOUT') {
     code = 400;
-    message = 'Image file size is largest.';
+    message = 'Server Time out';
   }
 
   console.log(err.code);

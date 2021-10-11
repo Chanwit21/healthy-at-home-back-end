@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { User } = require('../models');
 const cloundinaryUploadPromise = require('../util/upload');
 
@@ -76,6 +77,52 @@ exports.getUserInfo = async (req, res, next) => {
     } else {
       res.status(400).json({ message: 'Can not get user with this id.' });
     }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getUserInfoByQuery = async (req, res, next) => {
+  try {
+    const { sort, limit, offset, word } = req.query;
+
+    if (isNaN(limit) || isNaN(offset)) {
+      return res.status(400).json({ message: 'offset and limit must be a number!!' });
+    }
+
+    if (!['firstName', 'lastName', 'email'].includes(sort)) {
+      return res.status(400).json({ message: 'sort is invalid!!' });
+    }
+
+    const allUser = await User.findAll();
+    const result = await User.findAll({
+      attributes: ['firstName', 'lastName', 'email', 'role', 'id'],
+      order: [[sort]],
+      limit: +limit,
+      offset: +offset,
+      where: {
+        [Op.or]: [
+          {
+            firstName: {
+              [Op.substring]: word,
+            },
+          },
+          {
+            lastName: {
+              [Op.substring]: word,
+            },
+          },
+          {
+            email: {
+              [Op.substring]: word,
+            },
+          },
+        ],
+      },
+    });
+    const users = result.filter((item) => item.id !== req.user.id);
+
+    res.status(200).json({ users: users, length: word ? users.length : allUser.length });
   } catch (err) {
     next(err);
   }

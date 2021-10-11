@@ -47,7 +47,7 @@ exports.payMentBySource = (req, res, next) => {
 exports.webHook = async (req, res, next) => {
   try {
     const { amount, id, card, source, created_at, paid_at, expires_at, status, metadata } = req.body.data;
-    // console.log({ amount, id, card, source, created_at, paid_at, expires_at, status, metadata });
+    console.log({ amount, id, card, source, created_at, paid_at, expires_at, status, metadata });
     if (status === 'successful' || status === 'failed') {
       // console.log({ amount, id, card, source, created_at, paid_at, expires_at, status, metadata });
       const transaction = await Transaction.create({
