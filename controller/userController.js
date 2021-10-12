@@ -21,7 +21,7 @@ exports.changeUserRole = async (req, res, next) => {
 };
 
 exports.updateUser = async (req, res, next) => {
-  const { firstName, lastName, nickName, weight, height, phoneNumber, gender, education } = req.body;
+  const { isDeleteImage, firstName, lastName, nickName, weight, height, phoneNumber, gender, education } = req.body;
   try {
     // if (isNaN(weight)) {
     //   return res.status(400).json({ message: 'Weight must be a number' });
@@ -43,13 +43,15 @@ exports.updateUser = async (req, res, next) => {
       nickName: nickName || null,
       phoneNumber: phoneNumber || null,
       gender: gender || null,
-      education: education || null,
+      education: education === 'null' ? null : education || null,
     };
 
     if (req.file) {
       const result = await cloundinaryUploadPromise(req.file.path);
       objectUpdate.image = result.secure_url;
-    } else {
+    }
+
+    if (isDeleteImage === 'true') {
       objectUpdate.image = null;
     }
 
