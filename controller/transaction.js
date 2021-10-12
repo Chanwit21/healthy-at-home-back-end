@@ -1,4 +1,4 @@
-const { Transaction, User, CourseService } = require('../models');
+const { Transaction, User, CourseService, Sequelize } = require('../models');
 
 exports.getLatestTransaction = async (req, res, next) => {
   try {
@@ -80,6 +80,18 @@ exports.getTransactionByQuery = async (req, res, next) => {
       });
 
     res.status(200).json({ transactions, length: allTransaction.length });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getTransactionAllAmount = async (req, res, next) => {
+  try {
+    const result = await Transaction.findAll({
+      attributes: [[Sequelize.fn('SUM', Sequelize.col('amount')), 'total_amount']],
+      where: { status: 'successful' },
+    });
+    res.status(200).json({ total_amount: result[0].dataValues.total_amount });
   } catch (err) {
     next(err);
   }

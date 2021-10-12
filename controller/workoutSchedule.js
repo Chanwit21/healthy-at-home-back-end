@@ -1,23 +1,73 @@
 const { WorkoutSchedule, ExercisePostureWorkoutSchedule, ExercisePosture } = require('../models');
 
 exports.getWorkoutScheduleByDay = async (req, res, next) => {
-  const { day, reletionId } = req.params;
-  console.log({ day, reletionId });
-  const workOutSchedule = await WorkoutSchedule.findOne({
-    order: [[{ model: ExercisePostureWorkoutSchedule }, 'col']],
-    where: { userTrainerWorkoutScheduleFoodScheduleId: reletionId, day },
-    attributes: { exclude: ['createdAt', 'updatedAt'] },
-    include: {
-      attributes: { exclude: ['createdAt', 'updatedAt', 'exercisePostureId', 'workoutScheduleId'] },
-      model: ExercisePostureWorkoutSchedule,
+  try {
+    const { day, reletionId } = req.params;
+    const workOutSchedule = await WorkoutSchedule.findOne({
+      order: [[{ model: ExercisePostureWorkoutSchedule }, 'col']],
+      where: { userTrainerWorkoutScheduleFoodScheduleId: reletionId, day },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
       include: {
-        attributes: { exclude: ['createdAt', 'updatedAt'] },
-        model: ExercisePosture,
+        attributes: { exclude: ['createdAt', 'updatedAt', 'exercisePostureId', 'workoutScheduleId'] },
+        model: ExercisePostureWorkoutSchedule,
+        include: {
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          model: ExercisePosture,
+        },
       },
-    },
-  });
+    });
+    res.status(200).json({ workOutSchedule });
+  } catch (err) {
+    next(err);
+  }
+};
 
-  res.status(200).json({ workOutSchedule });
+exports.getAllWorkoutSchedule = async (req, res, next) => {
+  try {
+    const { reletionId } = req.params;
+    const results = await WorkoutSchedule.findAll({
+      order: [[{ model: ExercisePostureWorkoutSchedule }, 'col'], 'day'],
+      where: { userTrainerWorkoutScheduleFoodScheduleId: reletionId },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      include: {
+        attributes: { exclude: ['createdAt', 'updatedAt', 'exercisePostureId', 'workoutScheduleId'] },
+        model: ExercisePostureWorkoutSchedule,
+        include: {
+          attributes: { exclude: ['createdAt', 'updatedAt'] },
+          model: ExercisePosture,
+        },
+      },
+    });
+
+    const workOutSchedules = results.map((workOutSchedule) => {
+      const { id: scheduleId, day, ExercisePostureWorkoutSchedules } = workOutSchedule;
+
+      const exercises = ExercisePostureWorkoutSchedules.map((exercise) => {
+        const { col, ExercisePosture } = exercise;
+
+        if (ExercisePosture) {
+          return {
+            col,
+            haveExercise: true,
+            exerciseId: ExercisePosture.id,
+            name: ExercisePosture.name,
+            fontColor: ExercisePosture.fontColor,
+            backgroundColor: ExercisePosture.backgroundColor,
+            link: ExercisePosture.link,
+            type: ExercisePosture.type,
+          };
+        }
+
+        return { col, haveExercise: false };
+      });
+
+      return { scheduleId, day, exercises };
+    });
+
+    res.status(200).json({ workOutSchedules });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.createWorkoutScheduleByDay = async (req, res, next) => {

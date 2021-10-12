@@ -8,5 +8,10 @@ router.get(
   passport.authenticate('jwtAdmin', { session: false }),
   transactionController.getTransactionByQuery
 );
+router.get(
+  '/all_amount',
+  passport.authenticate('jwtAdmin', { session: false }),
+  transactionController.getTransactionAllAmount
+);
 
 module.exports = router;
