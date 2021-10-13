@@ -26,9 +26,11 @@ exports.getTransactionByQuery = async (req, res, next) => {
     if (!['amount', 'status', 'userName'].includes(sort)) {
       return res.status(400).json({ message: 'sort is invalid!!' });
     }
+    const sorted = sort === 'userName' ? [{ model: User }, 'firstName'] : [sort];
 
     const allTransaction = await Transaction.findAll();
     const result = await Transaction.findAll({
+      order: [sorted],
       limit: +limit,
       offset: +offset,
       attributes: {
@@ -51,33 +53,28 @@ exports.getTransactionByQuery = async (req, res, next) => {
         { model: CourseService, attributes: ['name'] },
       ],
     });
-    const transactions = result
-      .map((item) => {
-        const {
-          id,
-          omiseCreatedAt,
-          amount,
-          status,
-          paidAt,
-          expiresAt,
-          User: { firstName, lastName },
-          CourseService: { name },
-        } = item;
-        return {
-          id,
-          omiseCreatedAt,
-          amount,
-          status,
-          paidAt,
-          expiresAt,
-          userName: firstName + ' ' + lastName,
-          courseName: name,
-        };
-      })
-      .sort((a, b) => {
-        if (b[sort] > a[sort]) return -1;
-        return 1;
-      });
+    const transactions = result.map((item) => {
+      const {
+        id,
+        omiseCreatedAt,
+        amount,
+        status,
+        paidAt,
+        expiresAt,
+        User: { firstName, lastName },
+        CourseService: { name },
+      } = item;
+      return {
+        id,
+        omiseCreatedAt,
+        amount,
+        status,
+        paidAt,
+        expiresAt,
+        userName: firstName + ' ' + lastName,
+        courseName: name,
+      };
+    });
 
     res.status(200).json({ transactions, length: allTransaction.length });
   } catch (err) {
