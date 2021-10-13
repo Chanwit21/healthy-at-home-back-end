@@ -18,6 +18,11 @@ exports.register = async (req, res, next) => {
     return res.status(400).json({ message: 'Password is unsecure' });
   }
 
+  const user = User.findOne({ where: { email: email } });
+  if (user) {
+    return res.status(400).json({ message: 'Email has already created.' });
+  }
+
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await User.create({
